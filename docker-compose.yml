@@ -1,7 +1,16 @@
 version: "3"
 services:
+  redis:
+    image: redis
+    container_name: cache
+    expose:
+      - 6379
   web:
-    container_name: flask-python-sample
+    container_name: flask-firewall-demo
+    links:
+      - redis
+    environment:
+      - REDIS_URL=redis://cache
     build: .
     ports:
       - "5000:5000"
