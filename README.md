@@ -1,12 +1,8 @@
-# Flask and Python 3 docker container
+# iFirewall
+
+DDOS Protection Firewall for Flask web app.
 
 ## Build it
-
-```
-docker build -t flask-python-sample:latest .
-```
-
-Or with docker-compose
 
 ```
 docker-compose build
@@ -15,24 +11,14 @@ docker-compose build
 ## Run it
 
 ```
-docker run -d -p 5000:5000 flask-python-sample
-```
-
-Or with docker-compose
-
-```
-docker-compose up -d
+docker-compose up
 ```
 
 ## Access to the shell
 
 ```
-docker exec -ti flask-python-sample /bin/bash
+docker exec -ti flask-firewall-demo /bin/bash
 ```
-
-### Note
-
-If you use docker-compose, you can do live changes
 
 ## See it in action
 
