@@ -7,8 +7,8 @@ RATE_LIMITER_CONF = {
     },
 
     "global_limit": {
-        "limit": 120,
-        "interval": 60
+        "limit": 1000,
+        "interval": 100
     }
 }
 

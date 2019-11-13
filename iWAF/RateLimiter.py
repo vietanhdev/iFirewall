@@ -35,9 +35,6 @@ class RateLimiter():
                         "message": "Too many requests. Limit %s in %s seconds" % (limit, interval)
                     })
                     return render_template('blocked.html'), 429
-                    # resp.status_code = 429
-                    # resp.headers['Retry-After'] = retry_after
-                    return resp
                 else:
                     pipe = self.redis_db.pipeline()
                     pipe.incr(key, 1)
