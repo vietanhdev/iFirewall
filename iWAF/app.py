@@ -14,8 +14,40 @@ from RateLimiter import RateLimiter
 # Initialize Firewall
 limiter = RateLimiter(RATE_LIMITER_CONF)
 
+# Init origin server list
+origin_servers = SERVERS
+
 LOG = logging.getLogger("app.py")
 
+# Monitor servers
+@app.route('/server_status')
+def server_status():
+    return render_template('server_status.html')
+
+# Monitor servers
+@app.route('/get_server_status')
+def get_server_status():
+
+    global origin_servers
+
+    data = []
+    for server in origin_servers:
+
+        try:
+            server_status_resp = requests.get(server["server_status_url"])
+
+            if server_status_resp.status_code != 200:
+                server_status = {"online": False}
+            else:
+                server_status = server_status_resp.json()
+        except:
+            server_status = {"online": False}
+            server["online"] = False
+
+        server_status["address"] = server["address"]
+        data.append(server_status)
+    
+    return jsonify({"data": data})
 
 @app.route('/', methods=["GET", "POST", "PUT", "DELETE"])
 @app.route('/<path:url>', methods=["GET", "POST", "PUT", "DELETE"])
@@ -24,7 +56,7 @@ def proxy(url=""):
 
     LOG.debug("%s %s with headers: %s", request.method, url, request.headers)
     r = make_request(url, request.method, dict(request.headers), request.form)
-    LOG.debug("Got %s response from %s",r.status_code, url)
+    LOG.debug("Got %s response from %s", r.status_code, url)
     headers = dict(r.raw.headers)
     def generate():
         for chunk in r.raw.stream(decode_content=False):
@@ -33,13 +65,23 @@ def proxy(url=""):
     out.status_code = r.status_code
     return out
 
-def make_request(url, method, headers={}, data=None):
+def make_request(url, method, headers={}, data=None, try_again=True):
 
-    url = SERVERS[random.randint(0, len(SERVERS)-1)]["address"] + url
+    global origin_servers
+    online_servers = [s for s in origin_servers if s["online"]]
+    selected_server = random.randint(0, len(online_servers)-1)
+    url = online_servers[selected_server]["address"] + url
 
     # Fetch the URL, and stream it back
     LOG.debug("Sending %s %s with headers: %s and data %s", method, url, headers, data)
-    return requests.request(method, url, params=request.args, stream=True, headers=headers, allow_redirects=False, data=data)
+
+    try:
+        resp = requests.request(method, url, params=request.args, stream=True, headers=headers, allow_redirects=False, data=data)
+    except:
+        if try_again:
+            resp = requests.request(method, url, params=request.args, stream=True, headers=headers, allow_redirects=False, data=data, try_again=False)
+    
+    return resp
 
 
 if __name__ == '__main__':

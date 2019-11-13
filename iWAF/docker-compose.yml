@@ -37,7 +37,7 @@ services:
     volumes:
       - ../web_server:/usr/src/app/
 
-  web_server_5:
-    build: ../web_server
-    volumes:
-      - ../web_server:/usr/src/app/
+  # web_server_5:
+  #   build: ../web_server
+  #   volumes:
+  #     - ../web_server:/usr/src/app/

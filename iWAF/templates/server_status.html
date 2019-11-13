@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Server Status Monitor</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="mt-4 mb-4" style="border-bottom: 4px solid #AAA;">
+            <h1>Server Status Monitor</h1>
+        </div>
+        <div class="row" id="servers">
+            
+        </div>
+    </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<script>
+
+function refreshStatus() {
+    $("#servers").html("");
+    $.get( "/get_server_status?t=" + new Date(), function( data ) {
+        data = data.data;
+        let html = "";
+        for (let i = 0; i < data.length; ++i) {
+            let progress = Math.floor(data[i].processing_tasks / data[i].server_queue_size * 100);
+            if (typeof data[i].processing_tasks === "undefined") {
+                progress = 100;
+            }
+            html += `
+                <div id="server-`+i+`" class="col col-md-4 p-2">
+                    <div class="p-2" style="height: 12rem; border: 5px solid #DEDEDE;">
+                        <h5>Server ID: `+(i+1)+`</h5>
+                        <p class="m-0"><b>Address: </b> `+data[i].address+`</p>
+                        <p class="p-0"><b>Status: </b> `+(data[i].online ? "Online" : "Offline")+`</p>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-`+(progress > 50 ? (progress > 80 ? "danger" : "warning") : "success")+`" role="progressbar" aria-valuenow="`+progress+`" aria-valuemin="0" aria-valuemax="100" style="width: `+(10+progress)+`%">`+data[i].processing_tasks+`/`+data[i].server_queue_size+`</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        $("#servers").html(html);
+    });
+}
+
+refreshStatus();
+
+setInterval(refreshStatus, 2000);
+
+</script>
+
+</html>

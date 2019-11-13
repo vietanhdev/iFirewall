@@ -14,11 +14,18 @@ def root():
 @app.route('/server_status')
 def server_status():
   global task_queue
-  serve_file("")
-  return jsonify({
-    "processing_tasks": len(task_queue),
-    "server_queue_size": WEB_SERVER_CONF["server_queue_size"]
-  })
+
+  # Remove finished tasks
+  task_queue = [t for t in task_queue if t > time.time()]
+
+  if len(task_queue) < WEB_SERVER_CONF["server_queue_size"]:
+    return jsonify({
+      "online": True,
+      "processing_tasks": len(task_queue),
+      "server_queue_size": WEB_SERVER_CONF["server_queue_size"]
+    })
+  else:
+    return "503 Service Unavailable", 503
 
 @app.route('/<path:path>')
 def serve_file(path):
@@ -30,9 +37,8 @@ def serve_file(path):
 
   if len(task_queue) < WEB_SERVER_CONF["server_queue_size"]:
     task_queue.append(time.time() + WEB_SERVER_CONF["processing_time"])
-    return str(len(task_queue))
   else:
-    return "Full Task Queue", 500
+    return "503 Service Unavailable", 503
 
   # send_static_file will guess the correct MIME type
   return send_from_directory("public/", path)
