@@ -15,12 +15,12 @@ limiter = RateLimiter(RATE_LIMITER_CONF)
 
 ORIGIN_SERVER = "http://web_server_1:80/"
 
-CHUNK_SIZE = 1024
 LOG = logging.getLogger("app.py")
 
 
 @app.route('/', methods=["GET", "POST", "PUT", "DELETE"])
 @app.route('/<path:url>', methods=["GET", "POST", "PUT", "DELETE"])
+@limiter.rate_limit(limit=10, interval=60)
 def proxy(url=""):
 
     url = ORIGIN_SERVER + url
