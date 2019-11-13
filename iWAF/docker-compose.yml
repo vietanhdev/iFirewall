@@ -1,0 +1,43 @@
+version: "3"
+services:
+
+  redis:
+    image: redis
+
+  iwaf:
+    links:
+      - redis
+      - web_server_1
+    environment:
+      - REDIS_URL=redis://cache
+    build: .
+    ports:
+      - "8080:5000"
+    volumes:
+      - ./:/usr/src/app/
+
+
+  web_server_1:
+    build: ../web_server
+    volumes:
+      - ../web_server:/usr/src/app/
+
+  web_server_2:
+    build: ../web_server
+    volumes:
+      - ../web_server:/usr/src/app/
+
+  web_server_3:
+    build: ../web_server
+    volumes:
+      - ../web_server:/usr/src/app/
+
+  web_server_4:
+    build: ../web_server
+    volumes:
+      - ../web_server:/usr/src/app/
+
+  web_server_5:
+    build: ../web_server
+    volumes:
+      - ../web_server:/usr/src/app/

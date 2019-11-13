@@ -1,0 +1,22 @@
+version: "3"
+services:
+  web_server_1:
+    build: .
+    volumes:
+      - ./:/usr/src/app/
+  web_server_2:
+    build: .
+    volumes:
+      - ./:/usr/src/app/
+  web_server_3:
+    build: .
+    volumes:
+      - ./:/usr/src/app/
+  web_server_4:
+    build: .
+    volumes:
+      - ./:/usr/src/app/
+  web_server_5:
+    build: .
+    volumes:
+      - ./:/usr/src/app/

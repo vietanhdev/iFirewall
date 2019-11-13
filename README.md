@@ -1,25 +1,29 @@
-# iFirewall
+# iWAF
 
-DDOS Protection Firewall for Flask web app.
+Simple Web Application Firewall using Flask.
 
-## Build it
+## Structure
+
+- Web application firewall: `/iWAF`.
+- Simple web server for demonstration: `/web_server`.
+
+## Environment & Run
+
+- Requirements:
+    + docker
+    + docker-compose
+
+
+- Run iWAF server:
 
 ```
-docker-compose build
-```
-
-## Run it
-
-```
+cd iWAF
 docker-compose up
 ```
 
-## Access to the shell
+- Run web servers:
 
 ```
-docker exec -ti flask-firewall-demo /bin/bash
+cd web_server
+docker-compose up
 ```
-
-## See it in action
-
-Go to `http://localhost:5000` and you should see flask running :-)

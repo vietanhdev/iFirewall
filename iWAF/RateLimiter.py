@@ -2,12 +2,10 @@ import logging
 import time
 from functools import wraps
 
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 import redis
 
-
-
-class iFirewall():
+class RateLimiter():
 
     def __init__(self, config):
         
@@ -36,8 +34,9 @@ class iFirewall():
                         'code': 429,
                         "message": "Too many requests. Limit %s in %s seconds" % (limit, interval)
                     })
-                    resp.status_code = 429
-                    resp.headers['Retry-After'] = retry_after
+                    return render_template('blocked.html'), 429
+                    # resp.status_code = 429
+                    # resp.headers['Retry-After'] = retry_after
                     return resp
                 else:
                     pipe = self.redis_db.pipeline()
