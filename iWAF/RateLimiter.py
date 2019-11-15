@@ -62,12 +62,12 @@ class RateLimiter():
                 current = self.redis_db.get(rate_limit_key)
 
                 # If user reach the blocking threshold, put user that user to blacklist
-                if current and int(current) > self.config["global_limit"]["block_threh"]:
+                if current and int(current) > self.config["global_limit"]["block_thresh"]:
                     self.redis_db.set(blacklist_key, self.config["global_limit"]["block_time"])
                     return render_template('blocked.html', g_captcha_site_key=self.config["recaptcha"]["site_key"]), 429
 
                 # Check rate limit for a warning
-                elif current and int(current) > self.config["global_limit"]["limit"]:
+                elif current and int(current) > self.config["global_limit"]["warning_thresh"]:
 
                     pipe = self.redis_db.pipeline()
                     pipe.incr(rate_limit_key, 1)
@@ -78,7 +78,7 @@ class RateLimiter():
                     self.logger.info("Hitting rate limit: %s" % (rate_limit_key))
                     resp = jsonify({
                         'code': 429,
-                        "message": "Too many requests. Limit %s in %s seconds" % (self.config["global_limit"]["limit"], self.config["global_limit"]["interval"])
+                        "message": "Too many requests. Limit %s in %s seconds" % (self.config["global_limit"]["warning_thresh"], self.config["global_limit"]["interval"])
                     })
                     return render_template('slow_down.html'), 429
 

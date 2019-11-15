@@ -11,9 +11,10 @@ RATE_LIMITER_CONF = {
 
     "global_limit": {
         "interval": 1000,
-        "limit": 10,
-        "block_threh": 20,
-        "block_time": 120
+        "warning_thresh": 10,
+        "block_thresh": 20,
+        "block_time": 120,
+        "ddos_thresh": 120
     },
 
     "recaptcha": {
