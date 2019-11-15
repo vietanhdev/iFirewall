@@ -75,21 +75,26 @@ def proxy(url=""):
     out.status_code = r.status_code
     return out
 
-def make_request(url, method, headers={}, data=None, try_again=True):
+def make_request(url, method, headers={}, data=None, try_again=True, bad_server_ids=[]):
+    """
+    Params:
+        - bad_server_ids: server ids. Try to avoid these servers
+    """
 
     global origin_servers
-    online_servers = [s for s in origin_servers if s["online"]]
+    online_servers = [s for s in origin_servers if s["online"] and s["id"] not in bad_server_ids]
     selected_server = random.randint(0, len(online_servers)-1)
     extended_url = online_servers[selected_server]["address"] + url
 
     # Fetch the URL, and stream it back
     LOG.debug("Sending %s %s with headers: %s and data %s", method, extended_url, headers, data)
 
+    resp = None
     try:
-        resp = requests.request(method, url, params=request.args, stream=True, headers=headers, allow_redirects=False, data=data)
+        resp = requests.request(method, extended_url, params=request.args, stream=True, headers=headers, allow_redirects=False, data=data)
     except:
         if try_again:
-            resp = make_request(url, method, headers={}, data=None, try_again=True)
+            resp = make_request(url, method, headers={}, data=None, try_again=False, bad_server_ids=[selected_server])
 
     return resp
 
