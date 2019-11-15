@@ -57,6 +57,12 @@ def proxy(url=""):
     r = make_request(url, request.method, dict(request.headers), request.form)
     LOG.debug("Got %s response from %s", r.status_code, url)
     headers = dict(r.raw.headers)
+
+    # Add headers to prevent XSS attack
+    # x-xss-protection:1; mode=block
+    headers.update({ "x-xss-protection" : "1; mode=block" }) # Force enable XSS Protection of browser
+    headers.update({ "X-Frame-Options" : "SAMEORIGIN" }) # Prevent render iframe
+
     def generate():
         for chunk in r.raw.stream(decode_content=False):
             yield chunk
