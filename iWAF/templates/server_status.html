@@ -1,58 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Server Status Monitor</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+
 <body>
     <div class="container">
         <div class="mt-4 mb-4" style="border-bottom: 4px solid #AAA;">
-            <h1>Server Status Monitor</h1>
+            <h1>HUST iWAF - Web Application Firewall</h1>
         </div>
-        <div class="row" id="servers">
-            
+
+        <ul class="nav nav-pills" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" href="#ddos-settings" role="tab" data-toggle="tab">DDOS Protection</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#server-list" role="tab" data-toggle="tab">Servers</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#server-status" role="tab" data-toggle="tab">Server Status</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#others" role="tab" data-toggle="tab">Others</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active pt-2" id="ddos-settings">
+                <div style="border: 1px solid #DEDEDE; width: 100%; padding: 2rem;">
+                    <form method="POST">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="interval">Interval (default: 60 (s))</label>
+                                <input type="number" class="form-control" id="interval">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="rate_limit_warning_thres">Warning threshold (requests/interval)</label>
+                                <input type="number" class="form-control" id="rate_limit_warning_thres">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="rate_limit_block_thres">Block threshold (requests/interval)</label>
+                                <input type="number" class="form-control" id="rate_limit_block_thres">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="rate_limit_block_time">Blocking time (seconds)</label>
+                                <input type="number" class="form-control" id="rate_limit_block_time">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="rate_limit_ddos_thres">DDOS threshold (requests/interval). When the DDOS
+                                    rate
+                                    exceeds this number, whitelist mode will be activated.</label>
+                                <input type="number" class="form-control" id="rate_limit_ddos_thres">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="rate_limit_challenge_valid_time">Challenge valid time (seconds) - Time in
+                                    whitelist after a challenge</label>
+                                <input type="number" class="form-control" id="rate_limit_challenge_valid_time">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="under_attack">
+                                <label class="form-check-label" for="under_attack">
+                                    I'm under attack now. Check this if you think you are under attack now. Hard
+                                    theshold mode will be activated.
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade pt-4" id="server-list">
+                <div style="border: 1px solid #DEDEDE; width: 100%; padding: 2rem;">
+                    <div id="myDIV" class="header">
+                        <h2 style="margin:5px">Server List</h2>
+                        <input type="text" class="server-input" placeholder="Server Address. Eg: http://webserver1.com:8080">
+                        <span onclick="newElement()" class="addBtn">Add</span>
+                    </div>
+
+                    <ul class="address-list">
+                        <li>Server 1</li>
+                        <li>Server 2</li>
+                    </ul>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="server-status">
+                <div class="row" id="servers"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade pt-4" id="others">
+                <div style="border: 1px solid #DEDEDE; width: 100%; padding: 2rem;">
+                    <form method="POST">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="force_xss">
+                                <label class="form-check-label" for="force_xss">
+                                    Force XSS Protection
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="only_same_origin_iframe">
+                                <label class="form-check-label" for="only_same_origin_iframe">
+                                    Only Allow Same Origin IFrame
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
         </div>
+
+
+
     </div>
 </body>
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+</script>
+
+<style>
+    /* Remove margins and padding from the list */
+    #server-list ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Style the list items */
+    #server-list ul li {
+        cursor: pointer;
+        position: relative;
+        padding: 12px 8px 12px 40px;
+        list-style-type: none;
+        background: #eee;
+        font-size: 18px;
+        transition: 0.2s;
+
+        /* make the list items unselectable */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Set all odd list items to a different color (zebra-stripes) */
+    #server-list ul li:nth-child(odd) {
+        background: #f9f9f9;
+    }
+
+    /* Darker background-color on hover */
+    #server-list ul li:hover {
+        background: #ddd;
+    }
+
+    /* When clicked on, add a background color and strike out text */
+    #server-list ul li.checked {
+        background: #888;
+        color: #fff;
+        text-decoration: line-through;
+    }
+
+
+    /* Style the close button */
+    #server-list .close {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 12px 16px 12px 16px;
+    }
+
+    #server-list .close:hover {
+        background-color: #f44336;
+        color: white;
+    }
+
+    /* Clear floats after the header */
+    #server-list .header:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    /* Style the input */
+    #server-list input {
+        margin: 0;
+        border: none;
+        border-radius: 0;
+        width: 75%;
+        padding: 10px;
+        float: left;
+        font-size: 16px;
+        background: #ededed;
+    }
+
+    /* Style the "Add" button */
+    #server-list .addBtn {
+        padding: 10px;
+        width: 25%;
+        background: #d9d9d9;
+        color: #555;
+        float: left;
+        text-align: center;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 0;
+    }
+
+    #server-list .addBtn:hover {
+        background-color: #bbb;
+    }
+</style>
 
 <script>
-
-function refreshStatus() {
-    $("#servers").html("");
-    $.get( "/get_server_status?t=" + new Date(), function( data ) {
-        data = data.data;
-        let html = "";
-        for (let i = 0; i < data.length; ++i) {
-            let progress = Math.floor(data[i].processing_tasks / data[i].server_queue_size * 100);
-            if (typeof data[i].processing_tasks === "undefined") {
-                progress = 100;
-            }
-            html += `
-                <div id="server-`+i+`" class="col col-md-4 p-2">
+    function refreshStatus() {
+        $("#servers").html("");
+        $.get("/get_server_status?t=" + new Date(), function (data) {
+            data = data.data;
+            let html = "";
+            for (let i = 0; i < data.length; ++i) {
+                let progress = Math.floor(data[i].processing_tasks / data[i].server_queue_size * 100);
+                if (typeof data[i].processing_tasks === "undefined") {
+                    progress = 100;
+                }
+                html += `
+                <div id="server-` + i + `" class="col col-md-4 p-2">
                     <div class="p-2" style="height: 12rem; border: 5px solid #DEDEDE;">
-                        <h5>Server ID: `+(i+1)+`</h5>
-                        <p class="m-0"><b>Address: </b> `+data[i].address+`</p>
-                        <p class="p-0"><b>Status: </b> `+(data[i].online ? "Online" : "Offline")+`</p>
+                        <h5>Server ID: ` + (i + 1) + `</h5>
+                        <p class="m-0"><b>Address: </b> ` + data[i].address + `</p>
+                        <p class="p-0"><b>Status: </b> ` + (data[i].online ? "Online" : "Offline") + `</p>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-`+(progress > 50 ? (progress > 80 ? "danger" : "warning") : "success")+`" role="progressbar" aria-valuenow="`+progress+`" aria-valuemin="0" aria-valuemax="100" style="width: `+(10+progress)+`%">`+data[i].processing_tasks+`/`+data[i].server_queue_size+`</div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-` + (progress > 50 ?
+                        (progress > 80 ? "danger" : "warning") : "success") +
+                    `" role="progressbar" aria-valuenow="` + progress +
+                    `" aria-valuemin="0" aria-valuemax="100" style="width: ` + (10 + progress) + `%">` + data[i]
+                    .processing_tasks + `/` + data[i].server_queue_size + `</div>
                         </div>
                     </div>
                 </div>
             `;
+            }
+
+            $("#servers").html(html);
+        });
+    }
+
+    refreshStatus();
+
+    setInterval(refreshStatus, 2000);
+</script>
+
+
+<script>
+    // Create a "close" button and append it to each list item
+    var myNodelist = document.querySelectorAll("#server-list li");
+    var i;
+    for (i = 0; i < myNodelist.length; i++) {
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+        span.className = "close";
+        span.appendChild(txt);
+        myNodelist[i].appendChild(span);
+    }
+
+    // Click on a close button to hide the current list item
+    var close = document.querySelectorAll("#server-list .close");
+    var i;
+    for (i = 0; i < close.length; i++) {
+        close[i].onclick = function () {
+            var div = this.parentElement;
+            div.style.display = "none";
         }
+    }
 
-        $("#servers").html(html);
-    });
-}
+    // Create a new list item when clicking on the "Add" button
+    function newElement() {
+        var li = document.createElement("li");
+        var inputValue = document.querySelector("#server-list .server-input").value;
+        var t = document.createTextNode(inputValue);
+        li.appendChild(t);
+        if (inputValue === '') {
+            alert("Input server address first");
+        } else {
+            document.querySelector("#server-list .address-list").appendChild(li);
+        }
+        document.querySelector("#server-list .server-input").value = "";
 
-refreshStatus();
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+        span.className = "close";
+        span.appendChild(txt);
+        li.appendChild(span);
 
-setInterval(refreshStatus, 2000);
 
+        close = document.querySelectorAll("#server-list .close");
+        for (i = 0; i < close.length; i++) {
+            close[i].onclick = function () {
+                var div = this.parentElement;
+                div.style.display = "none";
+            }
+        }
+    }
 </script>
 
 </html>
