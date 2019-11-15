@@ -56,7 +56,7 @@ class RateLimiter():
                             # Fail
                             return render_template('blocked.html', g_captcha_site_key=self.config["recaptcha"]["site_key"]), 429
                     else:
-                        return render_template('blocked.html', g_captcha_site_key=self.config["recaptcha"]["site_key"]), 429
+                        return render_template('blocked.html', g_captcha_site_key=self.config["recaptcha"]["site_key"], message="Wrong captcha. Try again!"), 429
 
                 # If user is not blocked, check rate limit
                 current = self.redis_db.get(rate_limit_key)
