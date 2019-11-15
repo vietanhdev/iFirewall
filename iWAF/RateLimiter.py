@@ -7,10 +7,9 @@ import requests
 
 class RateLimiter():
 
-    def __init__(self, config, captcha):
+    def __init__(self, config):
         
         self.config = config
-        self.captcha = captcha
         self.redis_db = redis.StrictRedis(host=self.config["redis"]["host"], port=self.config["redis"]["port"], db=self.config["redis"]["db"])
         self.logger = logging.getLogger(__name__)
 

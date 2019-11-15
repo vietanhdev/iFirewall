@@ -6,23 +6,12 @@ from urllib.parse import urlparse, urlunparse
 import requests
 import logging
 import random
-import uuid
-from flask_session import Session
-from flask_session_captcha import FlaskSessionCaptcha
 from RateLimiter import RateLimiter
 
 app = Flask(__name__)
 
-# Setup Captcha for app
-app.config['SECRET_KEY'] = 'THIS_IS_MY_KEY'
-app.config['CAPTCHA_ENABLE'] = True
-app.config['CAPTCHA_NUMERIC_DIGITS'] = 5
-app.config['SESSION_TYPE'] = 'sqlalchemy'
-Session(app)
-captcha = FlaskSessionCaptcha(app)
-
 # Initialize Firewall
-limiter = RateLimiter(RATE_LIMITER_CONF, captcha)
+limiter = RateLimiter(RATE_LIMITER_CONF)
 
 # Init origin server list
 origin_servers = SERVERS
