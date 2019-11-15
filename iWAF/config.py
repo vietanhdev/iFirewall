@@ -1,5 +1,8 @@
 
 RATE_LIMITER_CONF = {
+
+    "homepage": "http://localhost:8080/",
+
     "redis": {
         "host": "redis",
         "port": 6379,

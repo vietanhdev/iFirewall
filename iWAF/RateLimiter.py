@@ -51,7 +51,7 @@ class RateLimiter():
                             self.redis_db.delete(blacklist_key)
                             self.redis_db.delete(rate_limit_key)
 
-                            return render_template("redirect.html")
+                            return render_template("redirect.html", homepage=self.config["homepage"])
                         else:
 
                             # Fail
