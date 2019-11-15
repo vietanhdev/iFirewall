@@ -1,4 +1,7 @@
 Flask==1.1.1
 redis
 requests
-flask-behind-proxy
+flask-session
+flask-session-captcha
+Flask-SQLAlchemy
+captcha

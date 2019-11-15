@@ -6,13 +6,23 @@ from urllib.parse import urlparse, urlunparse
 import requests
 import logging
 import random
+import uuid
+from flask_session import Session
+from flask_session_captcha import FlaskSessionCaptcha
+from RateLimiter import RateLimiter
 
 app = Flask(__name__)
 
-from RateLimiter import RateLimiter
+# Setup Captcha for app
+app.config['SECRET_KEY'] = 'THIS_IS_MY_KEY'
+app.config['CAPTCHA_ENABLE'] = True
+app.config['CAPTCHA_NUMERIC_DIGITS'] = 5
+app.config['SESSION_TYPE'] = 'sqlalchemy'
+Session(app)
+captcha = FlaskSessionCaptcha(app)
 
 # Initialize Firewall
-limiter = RateLimiter(RATE_LIMITER_CONF)
+limiter = RateLimiter(RATE_LIMITER_CONF, captcha)
 
 # Init origin server list
 origin_servers = SERVERS
@@ -46,12 +56,12 @@ def get_server_status():
 
         server_status["address"] = server["address"]
         data.append(server_status)
-    
+
     return jsonify({"data": data})
 
 @app.route('/', methods=["GET", "POST", "PUT", "DELETE"])
 @app.route('/<path:url>', methods=["GET", "POST", "PUT", "DELETE"])
-@limiter.rate_limit(limit=RATE_LIMITER_CONF["global_limit"]["limit"], interval=RATE_LIMITER_CONF["global_limit"]["interval"])
+@limiter.rate_limit()
 def proxy(url=""):
 
     LOG.debug("%s %s with headers: %s", request.method, url, request.headers)
@@ -79,8 +89,8 @@ def make_request(url, method, headers={}, data=None, try_again=True):
         resp = requests.request(method, url, params=request.args, stream=True, headers=headers, allow_redirects=False, data=data)
     except:
         if try_again:
-            resp = requests.request(method, url, params=request.args, stream=True, headers=headers, allow_redirects=False, data=data, try_again=False)
-    
+            resp = make_request(url, method, headers={}, data=None, try_again=True)
+
     return resp
 
 

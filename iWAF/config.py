@@ -7,8 +7,15 @@ RATE_LIMITER_CONF = {
     },
 
     "global_limit": {
-        "limit": 1000,
-        "interval": 100
+        "interval": 1000,
+        "limit": 3,
+        "block_threh": 6,
+        "block_time": 120
+    },
+
+    "recaptcha": {
+        "site_key": "6LcJ1sIUAAAAALGo16uZMmfKYR-cfxswil-NZTBB",
+        "secret_key": "6LcJ1sIUAAAAACdmJ4Eyy1OInCiR4v2LS-zy3CXz"
     }
 }
 
