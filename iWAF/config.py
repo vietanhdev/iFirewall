@@ -8,8 +8,8 @@ RATE_LIMITER_CONF = {
 
     "global_limit": {
         "interval": 1000,
-        "limit": 3,
-        "block_threh": 6,
+        "limit": 10,
+        "block_threh": 20,
         "block_time": 120
     },
 

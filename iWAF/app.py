@@ -80,10 +80,10 @@ def make_request(url, method, headers={}, data=None, try_again=True):
     global origin_servers
     online_servers = [s for s in origin_servers if s["online"]]
     selected_server = random.randint(0, len(online_servers)-1)
-    url = online_servers[selected_server]["address"] + url
+    extended_url = online_servers[selected_server]["address"] + url
 
     # Fetch the URL, and stream it back
-    LOG.debug("Sending %s %s with headers: %s and data %s", method, url, headers, data)
+    LOG.debug("Sending %s %s with headers: %s and data %s", method, extended_url, headers, data)
 
     try:
         resp = requests.request(method, url, params=request.args, stream=True, headers=headers, allow_redirects=False, data=data)
