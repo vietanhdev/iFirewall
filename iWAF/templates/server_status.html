@@ -94,14 +94,18 @@
                 <div style="border: 1px solid #DEDEDE; width: 100%; padding: 2rem;">
                     <div id="myDIV" class="header">
                         <h2 style="margin:5px">Server List</h2>
+                        <p style="text-align: right;">
+                            <button class="btn btn-primary" onclick='requestUpdateParams(
+                                    "servers"
+                                    )'>Save</button>
+                        </p>
+
                         <input type="text" class="server-input"
                             placeholder="Server Address. Eg: http://webserver1.com:8080">
                         <span onclick="newServerFromInput()" class="addBtn">Add</span>
                     </div>
 
                     <ul class="address-list">
-                        <li>Server 1</li>
-                        <li>Server 2</li>
                     </ul>
                 </div>
             </div>
@@ -306,6 +310,7 @@
 
     function addServer(serverAddress) {
         var li = document.createElement("li");
+        li.setAttribute("value", serverAddress);
         var t = document.createTextNode(serverAddress);
         li.appendChild(t);
 
@@ -320,8 +325,7 @@
         close = document.querySelectorAll("#server-list .close");
         for (i = 0; i < close.length; i++) {
             close[i].onclick = function () {
-                var div = this.parentElement;
-                div.style.display = "none";
+                this.parentElement.parentNode.removeChild( this.parentElement );
             }
         }
     }
@@ -329,7 +333,7 @@
     // Create a new list item when clicking on the "Add" button
     function newServerFromInput() {
         var inputValue = document.querySelector("#server-list .server-input").value;
-        
+
         if (inputValue === '') {
             alert("Input server address first");
         } else {
@@ -373,7 +377,7 @@
                         if (key === "servers") {
                             clearServerList();
                             let servers = data[key];
-                            for (let i = 0; i < servers.length; ++i){
+                            for (let i = 0; i < servers.length; ++i) {
                                 addServer(servers[i].address)
                             }
                         }
@@ -400,13 +404,30 @@
 
         let params = {};
         for (let i = 0; i < keys.length; ++i) {
-            if (keys[i] in INT_PARAMS) {
-                params[keys[i]] = parseInt($("#" + keys[i]))
+            if (INT_PARAMS.includes(keys[i])) {
+                params[keys[i]] = parseInt($("#" + keys[i]).val())
+            }
+            if (keys[i] == "rate_limit_under_attack") {
+                if ($("#rate_limit_under_attack").is(":checked")) {
+                    params["rate_limit_under_attack"] = true;
+                } else {
+                    params["rate_limit_under_attack"] = false;
+                }
+            }
+            if (keys[i] == "servers") {
+                let servers = [];
+                $(".address-list li").each(function( index ) {
+                    servers.push($( this ).attr("value"))
+                });
+                params["servers"] = servers;
             }
         }
 
+        console.log(params);
+        
+
         $.ajax({
-            type: "POST",
+            type: "PUT",
             contentType: "application/json; charset=utf-8",
             url: "",
             data: JSON.stringify(params),
