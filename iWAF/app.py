@@ -1,4 +1,5 @@
-from config import RATE_LIMITER_CONF, SERVERS
+from default_config import DEFAULT_CONFIG
+from Config import Config
 from flask import Flask, render_template, jsonify, request, redirect, Response, request, abort
 import json
 import re
@@ -10,11 +11,10 @@ from RateLimiter import RateLimiter
 
 app = Flask(__name__)
 
-# Initialize Firewall
-limiter = RateLimiter(RATE_LIMITER_CONF)
+config = Config(DEFAULT_CONFIG) # Global configuration object
 
-# Init origin server list
-origin_servers = SERVERS
+# Initialize Firewall
+limiter = RateLimiter(config)
 
 LOG = logging.getLogger("app.py")
 
@@ -27,10 +27,10 @@ def server_status():
 @app.route('/get_server_status')
 def get_server_status():
 
-    global origin_servers
+    global config
 
     data = []
-    for server in origin_servers:
+    for server in config.get()["servers"]:
 
         try:
             server_status_resp = requests.get(server["server_status_url"])
@@ -76,8 +76,8 @@ def make_request(url, method, headers={}, data=None, try_again=True, bad_server_
         - bad_server_ids: server ids. Try to avoid these servers
     """
 
-    global origin_servers
-    online_servers = [s for s in origin_servers if s["online"] and s["id"] not in bad_server_ids]
+    global config
+    online_servers = [s for s in config.get()["servers"] if s["online"] and s["id"] not in bad_server_ids]
     selected_server = random.randint(0, len(online_servers)-1)
     extended_url = online_servers[selected_server]["address"] + url
 
