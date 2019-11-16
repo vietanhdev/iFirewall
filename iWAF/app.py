@@ -19,9 +19,21 @@ limiter = RateLimiter(config)
 LOG = logging.getLogger("app.py")
 
 # Monitor servers
-@app.route('/server_status')
-def server_status():
+@app.route('/iwaf_admin', methods=["GET"])
+def iwaf_admin():
     return render_template('server_status.html')
+
+# Get configs
+@app.route('/iwaf_admin', methods=["POST"])
+def iwaf_get_params():
+    global config
+    return jsonify(config.get_public_params())
+
+# Update configs
+@app.route('/iwaf_admin', methods=["PUT"])
+def iwaf_update_params():
+    params = request.get_json(force=True)
+    return config.update_params(params)
 
 # Monitor servers
 @app.route('/get_server_status')

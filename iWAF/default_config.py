@@ -12,6 +12,9 @@ DEFAULT_CONFIG = {
     "rate_limit_block_time": 120,
     "rate_limit_ddos_thresh": 120,
     "rate_limit_ddos_interval": 10 * 60,
+    "rate_limit_whitelist_expiration_time": 10*60,
+    "rate_limit_under_attack": False,
+
     "recaptcha_site_key": "6LcJ1sIUAAAAALGo16uZMmfKYR-cfxswil-NZTBB",
     "recaptcha_secret_key": "6LcJ1sIUAAAAACdmJ4Eyy1OInCiR4v2LS-zy3CXz",
 

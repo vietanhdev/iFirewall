@@ -23,68 +23,80 @@
             <li class="nav-item">
                 <a class="nav-link" href="#server-status" role="tab" data-toggle="tab">Server Status</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link" href="#others" role="tab" data-toggle="tab">Others</a>
-            </li>
+            </li> -->
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active pt-2" id="ddos-settings">
                 <div style="border: 1px solid #DEDEDE; width: 100%; padding: 2rem;">
-                    <form method="POST">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="interval">Interval (default: 60 (s))</label>
-                                <input type="number" class="form-control" id="interval">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="rate_limit_warning_thres">Warning threshold (requests/interval)</label>
-                                <input type="number" class="form-control" id="rate_limit_warning_thres">
-                            </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="rate_limit_interval">Interval (default: 60 (s))</label>
+                            <input type="number" class="form-control" id="rate_limit_interval">
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="rate_limit_block_thres">Block threshold (requests/interval)</label>
-                                <input type="number" class="form-control" id="rate_limit_block_thres">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="rate_limit_block_time">Blocking time (seconds)</label>
-                                <input type="number" class="form-control" id="rate_limit_block_time">
-                            </div>
+                        <div class="form-group col-md-6">
+                            <label for="rate_limit_warning_thresh">Warning threshold (requests/interval)</label>
+                            <input type="number" class="form-control" id="rate_limit_warning_thresh">
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="rate_limit_ddos_thres">DDOS threshold (requests/interval). When the DDOS
-                                    rate
-                                    exceeds this number, whitelist mode will be activated.</label>
-                                <input type="number" class="form-control" id="rate_limit_ddos_thres">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="rate_limit_challenge_valid_time">Challenge valid time (seconds) - Time in
-                                    whitelist after a challenge</label>
-                                <input type="number" class="form-control" id="rate_limit_challenge_valid_time">
-                            </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="rate_limit_block_thresh">Block threshold (requests/interval)</label>
+                            <input type="number" class="form-control" id="rate_limit_block_thresh">
                         </div>
-                        <div class="form-group">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="under_attack">
-                                <label class="form-check-label" for="under_attack">
-                                    I'm under attack now. Check this if you think you are under attack now. Hard
-                                    theshold mode will be activated.
-                                </label>
-                            </div>
+                        <div class="form-group col-md-6">
+                            <label for="rate_limit_block_time">Blocking time (seconds)</label>
+                            <input type="number" class="form-control" id="rate_limit_block_time">
                         </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </form>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="rate_limit_ddos_thresh">DDOS threshold (requests/interval). When the DDOS
+                                rate
+                                exceeds this number, whitelist mode will be activated.</label>
+                            <input type="number" class="form-control" id="rate_limit_ddos_thresh">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="rate_limit_ddos_interval">DDOS Interval</label>
+                            <input type="number" class="form-control" id="rate_limit_ddos_interval">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="rate_limit_whitelist_expiration_time">Challenge valid time (seconds) - Time in
+                                whitelist after a challenge</label>
+                            <input type="number" class="form-control" id="rate_limit_whitelist_expiration_time">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rate_limit_under_attack">
+                            <label class="form-check-label" for="rate_limit_under_attack">
+                                I'm under attack now. Check this if you think you are under attack now. Hard
+                                theshold mode will be activated.
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick='requestUpdateParams(
+                            "rate_limit_interval",
+                            "rate_limit_warning_thresh",
+                            "rate_limit_block_thresh",
+                            "rate_limit_block_time",
+                            "rate_limit_ddos_thresh",
+                            "rate_limit_ddos_interval",
+                            "rate_limit_whitelist_expiration_time",
+                            "rate_limit_under_attack"
+                            )'>Save</button>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane fade pt-4" id="server-list">
                 <div style="border: 1px solid #DEDEDE; width: 100%; padding: 2rem;">
                     <div id="myDIV" class="header">
                         <h2 style="margin:5px">Server List</h2>
-                        <input type="text" class="server-input" placeholder="Server Address. Eg: http://webserver1.com:8080">
-                        <span onclick="newElement()" class="addBtn">Add</span>
+                        <input type="text" class="server-input"
+                            placeholder="Server Address. Eg: http://webserver1.com:8080">
+                        <span onclick="newServerFromInput()" class="addBtn">Add</span>
                     </div>
 
                     <ul class="address-list">
@@ -288,25 +300,22 @@
         }
     }
 
-    // Create a new list item when clicking on the "Add" button
-    function newElement() {
-        var li = document.createElement("li");
-        var inputValue = document.querySelector("#server-list .server-input").value;
-        var t = document.createTextNode(inputValue);
-        li.appendChild(t);
-        if (inputValue === '') {
-            alert("Input server address first");
-        } else {
-            document.querySelector("#server-list .address-list").appendChild(li);
-        }
-        document.querySelector("#server-list .server-input").value = "";
+    function clearServerList() {
+        document.querySelector("#server-list .address-list").innerHTML = "";
+    }
 
-        var span = document.createElement("SPAN");
-        var txt = document.createTextNode("\u00D7");
+    function addServer(serverAddress) {
+        var li = document.createElement("li");
+        var t = document.createTextNode(serverAddress);
+        li.appendChild(t);
+
+        document.querySelector("#server-list .address-list").appendChild(li);
+
+        let span = document.createElement("SPAN");
+        let txt = document.createTextNode("\u00D7");
         span.className = "close";
         span.appendChild(txt);
         li.appendChild(span);
-
 
         close = document.querySelectorAll("#server-list .close");
         for (i = 0; i < close.length; i++) {
@@ -315,6 +324,101 @@
                 div.style.display = "none";
             }
         }
+    }
+
+    // Create a new list item when clicking on the "Add" button
+    function newServerFromInput() {
+        var inputValue = document.querySelector("#server-list .server-input").value;
+        
+        if (inputValue === '') {
+            alert("Input server address first");
+        } else {
+            addServer(inputValue);
+        }
+
+        document.querySelector("#server-list .server-input").value = "";
+
+    }
+</script>
+
+<!-- Update params to servers -->
+<script>
+    const INT_PARAMS = [
+        "rate_limit_interval",
+        "rate_limit_warning_thresh",
+        "rate_limit_block_thresh",
+        "rate_limit_block_time",
+        "rate_limit_ddos_thresh",
+        "rate_limit_ddos_interval",
+        "rate_limit_whitelist_expiration_time",
+    ]
+
+    var requestRefreshParams = function () {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "",
+            success: function (data) {
+                for (let key in data) {
+                    if (data.hasOwnProperty(key)) {
+
+                        if (INT_PARAMS.includes(key)) {
+                            $("#" + key).val(data[key]);
+                        }
+
+                        if (key === "rate_limit_under_attack") {
+                            $("#rate_limit_under_attack").prop("checked", true);
+                        }
+
+                        if (key === "servers") {
+                            clearServerList();
+                            let servers = data[key];
+                            for (let i = 0; i < servers.length; ++i){
+                                addServer(servers[i].address)
+                            }
+                        }
+                    }
+                }
+            },
+            error: function (data) {
+                alert(data.responseText)
+            },
+            dataType: "json"
+        });
+    }
+
+
+    $(document).ready(function () {
+        requestRefreshParams();
+    });
+
+    var requestUpdateParams = function (...keys) {
+
+        if (keys.length == 0) {
+            return;
+        }
+
+        let params = {};
+        for (let i = 0; i < keys.length; ++i) {
+            if (keys[i] in INT_PARAMS) {
+                params[keys[i]] = parseInt($("#" + keys[i]))
+            }
+        }
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "",
+            data: JSON.stringify(params),
+            success: function (data) {
+                alert(data)
+            },
+            error: function (data) {
+                alert(data.responseText)
+            },
+            dataType: "json"
+        });
+
     }
 </script>
 
