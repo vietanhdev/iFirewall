@@ -71,9 +71,6 @@ class RateLimiter():
                         )
                         result = r.json()
 
-                        # Debug
-                        result["success"] = True
-
                         if result['success']:
                             # Remove user from blacklist
                             self.redis_db.delete(blacklist_key)
