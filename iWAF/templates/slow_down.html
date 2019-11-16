@@ -1,1 +1,14 @@
-Our systems have detected unusual traffic from your computer network. Please try again in some minutes.
+Our systems have detected unusual traffic from your computer network. Please try again in some minutes.<br>
+Reloading after: <span id="reload-count-down">----</span> seconds.
+
+<script>
+// Reload after 5 minutes
+let timeLeft = 5 * 60; // 300 s;
+setInterval(() => {
+    timeLeft -= 1;
+    document.getElementById("reload-count-down").innerHTML = timeLeft;
+    if (timeLeft <= 0) {
+        location.reload();
+    }
+}, 1000);
+</script>
