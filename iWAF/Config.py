@@ -11,6 +11,7 @@ class Config:
         "rate_limit_ddos_interval",
         "rate_limit_whitelist_expiration_time",
         "rate_limit_under_attack",
+        "rate_limit_ddos_blocking_time",
         "servers",
         "homepage"
     ]
@@ -55,12 +56,12 @@ class Config:
                 "rate_limit_block_time",
                 "rate_limit_ddos_thresh",
                 "rate_limit_ddos_interval",
+                "rate_limit_ddos_blocking_time",
                 "rate_limit_whitelist_expiration_time"]:
             
                 try:
                     value = int(params[key])
                     if value <= 0:
-                        return "WTF"
                         return "Wrong value for %s!" % key
                     self.set_param(key, value)
                 except:
@@ -74,18 +75,18 @@ class Config:
                     return "Wrong value for %s!" % key
 
             elif key == "servers":
-                # try:
-                servers = []
-                for i in range(len(params["servers"])):
-                    servers.append({
-                        "id": i+1,
-                        "address": params["servers"][i],
-                        "server_status_url": params["servers"][i] + "server_status",
-                        "online": True
-                    })
-                self.set_param(key, servers)
-                # except:
-                #     return "Wrong value for %s!" % key
+                try:
+                    servers = []
+                    for i in range(len(params["servers"])):
+                        servers.append({
+                            "id": i+1,
+                            "address": params["servers"][i],
+                            "server_status_url": params["servers"][i] + "server_status",
+                            "online": True
+                        })
+                    self.set_param(key, servers)
+                except:
+                    return "Wrong value for %s!" % key
 
 
 

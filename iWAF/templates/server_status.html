@@ -34,7 +34,7 @@
                 <div style="border: 1px solid #DEDEDE; width: 100%; padding: 2rem;">
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="rate_limit_interval">Interval (default: 60 (s))</label>
+                            <label for="rate_limit_interval">Rate limit Interval (default: 60 (s))</label>
                             <input type="number" class="form-control" id="rate_limit_interval">
                         </div>
                         <div class="form-group col-md-6">
@@ -44,11 +44,11 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="rate_limit_block_thresh">Block threshold (requests/interval)</label>
+                            <label for="rate_limit_block_thresh">Rate limit (requests/interval)</label>
                             <input type="number" class="form-control" id="rate_limit_block_thresh">
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="rate_limit_block_time">Blocking time (seconds)</label>
+                            <label for="rate_limit_block_time">Rate limit Blocking time (seconds)</label>
                             <input type="number" class="form-control" id="rate_limit_block_time">
                         </div>
                     </div>
@@ -62,6 +62,10 @@
                         <div class="form-group col-md-6">
                             <label for="rate_limit_ddos_interval">DDOS Interval</label>
                             <input type="number" class="form-control" id="rate_limit_ddos_interval">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="rate_limit_ddos_blocking_time">DDOS Blocking time</label>
+                            <input type="number" class="form-control" id="rate_limit_ddos_blocking_time">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="rate_limit_whitelist_expiration_time">Challenge valid time (seconds) - Time in
@@ -85,6 +89,7 @@
                             "rate_limit_block_time",
                             "rate_limit_ddos_thresh",
                             "rate_limit_ddos_interval",
+                            "rate_limit_ddos_blocking_time",
                             "rate_limit_whitelist_expiration_time",
                             "rate_limit_under_attack"
                             )'>Save</button>
@@ -354,6 +359,7 @@
         "rate_limit_block_time",
         "rate_limit_ddos_thresh",
         "rate_limit_ddos_interval",
+        "rate_limit_ddos_blocking_time",
         "rate_limit_whitelist_expiration_time",
     ]
 
