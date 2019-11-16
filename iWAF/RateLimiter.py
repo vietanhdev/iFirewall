@@ -42,6 +42,7 @@ class RateLimiter():
                 blacklist_key = "%s%s" % ("blacklisted", request.remote_addr)
                 whilelist_key = "%s%s" % ("whitelisted", request.remote_addr)
 
+
                 under_ddos_attack = self.redis_db.exists(ddos_flag_key) or self.config.get_param("rate_limit_under_attack")
 
                 # Block all user not in whitelist when under attack
@@ -50,7 +51,7 @@ class RateLimiter():
                 if under_ddos_attack:
                     if not self.redis_db.exists(whilelist_key):
                         blocking_mode = "DDOS_PROTECT"
-                elif self.redis_db.exists(blacklist_key):
+                if self.redis_db.exists(blacklist_key):
                     blocking_mode = "RATE_LIMIT_PROTECT"
 
 
@@ -96,7 +97,6 @@ class RateLimiter():
                 # If user reach the blocking threshold, put user that user to blacklist
                 if current_rate_user and int(current_rate_user) > self.config.get_param("rate_limit_block_thresh"):
                     self.redis_db.set(blacklist_key, 1, ex=self.config.get_param("rate_limit_block_time"))
-                    return "WTF"
                     return render_template('blocked.html', g_captcha_site_key=self.config.get_param("recaptcha_site_key"), blocking_mode="RATE_LIMIT_PROTECT"), 429
 
                 # Check rate limit for a warning
