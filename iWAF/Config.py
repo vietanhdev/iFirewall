@@ -1,5 +1,5 @@
 from threading import Lock
-
+import redis
 
 class Config:
 
@@ -19,6 +19,7 @@ class Config:
     def __init__(self, default_config):
         self.config = default_config
         self.data_lock = Lock()
+        self.redis_db = redis.StrictRedis(host=self.config["redis_host"], port=self.config["redis_port"], db=self.config["redis_db"])
 
     def get(self):
         self.data_lock.acquire()
@@ -87,6 +88,11 @@ class Config:
                     self.set_param(key, servers)
                 except:
                     return "Wrong value for %s!" % key
+
+            elif key == "reset_protection_db": # Clear protection database
+                for key in self.redis_db.scan_iter("*"):
+                    self.redis_db.delete(key)
+                return "Cleared database successfully!"
 
 
 

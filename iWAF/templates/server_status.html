@@ -93,6 +93,9 @@
                             "rate_limit_whitelist_expiration_time",
                             "rate_limit_under_attack"
                             )'>Save</button>
+                    <button class="btn btn-danger" onclick='requestUpdateParams(
+                        "reset_protection_db"
+                        )'>Reset Protection Database</button>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane fade pt-4" id="server-list">
@@ -377,7 +380,7 @@
                         }
 
                         if (key === "rate_limit_under_attack") {
-                            $("#rate_limit_under_attack").prop("checked", true);
+                            $("#rate_limit_under_attack").prop("checked", data[key]);
                         }
 
                         if (key === "servers") {
@@ -426,6 +429,9 @@
                     servers.push($( this ).attr("value"))
                 });
                 params["servers"] = servers;
+            }
+            if (keys[i] == "reset_protection_db") {
+                params["reset_protection_db"] = true;
             }
         }
 
