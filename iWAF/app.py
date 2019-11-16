@@ -75,6 +75,17 @@ def proxy(url=""):
     headers.update({ "x-xss-protection" : "1; mode=block" }) # Force enable XSS Protection of browser
     headers.update({ "X-Frame-Options" : "SAMEORIGIN" }) # Prevent render iframe
 
+    # Add IP address info 
+    # https://support.cloudflare.com/hc/en-us/articles/200170986
+    found_x_forwarded_for_header = False
+    for header in headers:
+        if header.lower() == "x-forwarded-for":
+            headers[header] += ",{}".format(request.remote_addr)
+            found_x_forwarded_for_header = True
+
+    if not found_x_forwarded_for_header:
+        headers[header] = str(request.remote_addr)
+
     def generate():
         for chunk in r.raw.stream(decode_content=False):
             yield chunk
