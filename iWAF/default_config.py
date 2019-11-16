@@ -10,9 +10,9 @@ DEFAULT_CONFIG = {
     "rate_limit_warning_thresh": 20,
     "rate_limit_block_thresh": 30,
     "rate_limit_block_time": 300,
-    "rate_limit_ddos_thresh": 5,
+    "rate_limit_ddos_thresh": 60,
     "rate_limit_ddos_interval": 60,
-    "rate_limit_ddos_blocking_time": 60,
+    "rate_limit_ddos_blocking_time": 300,
     "rate_limit_whitelist_expiration_time": 10*60,
     "rate_limit_under_attack": False,
 
