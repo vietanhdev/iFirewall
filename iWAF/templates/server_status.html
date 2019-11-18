@@ -255,8 +255,11 @@
     function refreshStatus() {
         $("#servers").html("");
         $.get("/get_server_status?t=" + new Date(), function (data) {
+            is_under_attack = data.is_under_attack ? "True" : "False";
             data = data.data;
-            let html = "";
+            let html = `<div class="col col-md-12 p-2">
+                    <h4 class="text-right">Under attack: `+ is_under_attack +`</h4>
+                </div>`;
             for (let i = 0; i < data.length; ++i) {
                 let progress = Math.floor(data[i].processing_tasks / data[i].server_queue_size * 100);
                 if (typeof data[i].processing_tasks === "undefined") {

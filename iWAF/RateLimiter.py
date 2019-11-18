@@ -13,6 +13,9 @@ class RateLimiter():
         self.redis_db = redis.StrictRedis(host=self.config.get_param("redis_host"), port=self.config.get_param("redis_port"), db=self.config.get_param("redis_db"))
         self.logger = logging.getLogger(__name__)
 
+    def is_under_attack(self):
+        ddos_flag_key = "ddos_detected"
+        return self.redis_db.exists(ddos_flag_key) or self.config.get_param("rate_limit_under_attack")
 
     def rate_limit(self, shared_limit=True):
         def rate_limit_decorator(f):

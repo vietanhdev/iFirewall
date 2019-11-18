@@ -39,7 +39,7 @@ def iwaf_update_params():
 @app.route('/get_server_status')
 def get_server_status():
 
-    global config
+    global config, limiter
 
     data = []
     for server in config.get()["servers"]:
@@ -58,7 +58,7 @@ def get_server_status():
         server_status["address"] = server["address"]
         data.append(server_status)
 
-    return jsonify({"data": data})
+    return jsonify({"data": data, "is_under_attack": limiter.is_under_attack()})
 
 @app.route('/', methods=["GET", "POST", "PUT", "DELETE"])
 @app.route('/<path:url>', methods=["GET", "POST", "PUT", "DELETE"])
